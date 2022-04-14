@@ -57,6 +57,7 @@ public class SeacomToolsApp extends Application {
     GridPane menuGridPane = new GridPane(); 
     VBox rightMenuPane = new VBox();
     VBox checkoutMenuPane = new VBox(); 
+    VBox toolMenuPane = new VBox(); 
     BorderPane menuPane = new BorderPane();
     Button btnAddToolWindow = new Button("Add New Tool");
     Button btnCheckOutWindow = new Button("Check Out Tool");
@@ -70,7 +71,7 @@ public class SeacomToolsApp extends Application {
     Label lblTitle = new Label("Seacom Tools Application"); 
     TabPane tabPane = new TabPane(); 
     Tab tab1 = new Tab("Checkout Records", checkoutMenuPane);
-    Tab tab2 = new Tab("Available Tools");
+    Tab tab2 = new Tab("Available Tools", toolMenuPane);
     Tab tab3 = new Tab("Current Employees");
     
     
@@ -170,7 +171,8 @@ public class SeacomToolsApp extends Application {
                 btnMenuAddEmp, btnMenuAddLocation);  
         rightMenuPane.setSpacing(15.0); 
         rightMenuPane.setAlignment(Pos.CENTER);        
-        checkoutMenuPane.getChildren().addAll(checkoutListView, btnCheckInTool);       
+        checkoutMenuPane.getChildren().addAll(checkoutListView, btnCheckInTool); 
+        toolMenuPane.getChildren().addAll(toolListView);       
         tabPane.getTabs().add(tab1);
         tabPane.getTabs().add(tab2);
         tabPane.getTabs().add(tab3);
