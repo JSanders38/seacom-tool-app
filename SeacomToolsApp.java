@@ -28,11 +28,13 @@ public class SeacomToolsApp extends Application {
     ArrayList<Tool> toolArray = new ArrayList<>();
     public static ObservableList<Tool> olTool = FXCollections.observableArrayList();
     public static ListView<Tool> toolListView = new ListView<Tool>(); 
+    public static ListView<Tool> toolMenuListView = new ListView<Tool>();
    
     // Employee ArrayList, Observable List
     ArrayList<Employee> empArray = new ArrayList<>();
     public static ObservableList<Employee> olEmployees = FXCollections.observableArrayList();
-    public static ListView<Employee> employeeListView = new ListView<Employee>();
+    public static ListView<Employee> employeeListView = new ListView<Employee>(); 
+    public static ListView<Employee> employeeMenuListView = new ListView<Employee>();
     
     // Locations ArrayList, Observable List
     ArrayList<Locations> locationArray = new ArrayList<>();
@@ -54,25 +56,21 @@ public class SeacomToolsApp extends Application {
     public static ObservableList olStatus = FXCollections.observableArrayList(statusOpts);
     
     // Main Menu Pane and Btns 
-    GridPane menuGridPane = new GridPane(); 
     VBox rightMenuPane = new VBox();
     VBox checkoutMenuPane = new VBox(); 
     VBox toolMenuPane = new VBox(); 
+    VBox empMenuPane = new VBox();
     BorderPane menuPane = new BorderPane();
     Button btnAddToolWindow = new Button("Add New Tool");
     Button btnCheckOutWindow = new Button("Check Out Tool");
     Button btnCheckIn = new Button("Check In Tool"); 
     Button btnMenuAddEmp = new Button("Add New Employee");
     Button btnMenuAddLocation = new Button("Add New Location"); 
-    MenuBar menuBar = new MenuBar(); 
-    Menu menuAdd = new Menu("Add"); 
-    MenuItem menuItemEmp = new MenuItem ("Employee");
-    MenuItem menuItemLoc = new MenuItem ("Location"); 
     Label lblTitle = new Label("Seacom Tools Application"); 
     TabPane tabPane = new TabPane(); 
     Tab tab1 = new Tab("Checkout Records", checkoutMenuPane);
     Tab tab2 = new Tab("Available Tools", toolMenuPane);
-    Tab tab3 = new Tab("Current Employees");
+    Tab tab3 = new Tab("Current Employees", empMenuPane); 
     
     
     // Add Tools Variables 
@@ -172,7 +170,11 @@ public class SeacomToolsApp extends Application {
         rightMenuPane.setSpacing(15.0); 
         rightMenuPane.setAlignment(Pos.CENTER);        
         checkoutMenuPane.getChildren().addAll(checkoutListView, btnCheckInTool); 
-        toolMenuPane.getChildren().addAll(toolListView);       
+        toolMenuPane.getChildren().addAll(toolMenuListView); 
+        empMenuPane.getChildren().addAll(employeeListView);
+        toolMenuListView.setPrefSize(300, 300);
+        toolMenuListView.setItems(olTool); 
+        employeeMenuListView.setItems(olEmployees);
         tabPane.getTabs().add(tab1);
         tabPane.getTabs().add(tab2);
         tabPane.getTabs().add(tab3);
@@ -214,7 +216,7 @@ public class SeacomToolsApp extends Application {
         addToolsPane.add(btnClearField, 0, 13);
         addToolsPane.setAlignment(Pos.CENTER);
         showTools.getChildren().addAll(toolListView);
-        toolListView.setPrefSize(600,300);
+        toolListView.setPrefSize(300,300);
         showTools.setAlignment(Pos.CENTER);
         rootPane.setTop(addToolsPane);
         rootPane.setBottom(showTools);
@@ -421,10 +423,10 @@ public class SeacomToolsApp extends Application {
             checkinTool(checkoutListView.getSelectionModel().getSelectedItem());    
         }); 
         
-        menuItemEmp.setOnAction(e-> {
+       /* menuItemEmp.setOnAction(e-> {
             primaryStage.setScene(addEmpScene);
             primaryStage.show();
-        }); 
+        }); */ 
         
         menuItemLoc.setOnAction(e-> {
             primaryStage.setScene(addLocationScene);
