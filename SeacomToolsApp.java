@@ -428,10 +428,10 @@ public class SeacomToolsApp extends Application {
             primaryStage.show();
         }); */ 
         
-        menuItemLoc.setOnAction(e-> {
+       /* menuItemLoc.setOnAction(e-> {
             primaryStage.setScene(addLocationScene);
             primaryStage.show();
-        });
+        });*/
         
         btnAddEmp.setOnAction(e-> {
             addEmp();           
