@@ -26,7 +26,8 @@ import javafx.stage.Modality;
 public class SeacomToolsApp extends Application { 
     // Tool ArrayList, Observable List, List View 
     ArrayList<Tool> toolArray = new ArrayList<>();
-    public static ObservableList<Tool> olTool = FXCollections.observableArrayList();
+    public static ObservableList<Tool> olTool = FXCollections.observableArrayList(); 
+    public static ObservableList<Tool> olAvailableTool = FXCollections.observableArrayList(); 
     public static ListView<Tool> toolListView = new ListView<Tool>(); 
     public static ListView<Tool> toolMenuListView = new ListView<Tool>();
    
@@ -65,7 +66,8 @@ public class SeacomToolsApp extends Application {
     Button btnCheckOutWindow = new Button("Check Out Tool");
     Button btnCheckIn = new Button("Check In Tool"); 
     Button btnMenuAddEmp = new Button("Add New Employee");
-    Button btnMenuAddLocation = new Button("Add New Location"); 
+    Button btnMenuAddLocation = new Button("Add New Location");
+    Button btnSelectedToolCheckout = new Button("Checkout Selected Tool"); 
     Label lblTitle = new Label("Seacom Tools Application"); 
     TabPane tabPane = new TabPane(); 
     Tab tab1 = new Tab("Checkout Records", checkoutMenuPane);
@@ -170,10 +172,10 @@ public class SeacomToolsApp extends Application {
         rightMenuPane.setSpacing(15.0); 
         rightMenuPane.setAlignment(Pos.CENTER);        
         checkoutMenuPane.getChildren().addAll(checkoutListView, btnCheckInTool); 
-        toolMenuPane.getChildren().addAll(toolMenuListView); 
+        toolMenuPane.getChildren().addAll(toolMenuListView, btnSelectedToolCheckout); 
         empMenuPane.getChildren().addAll(employeeListView);
         toolMenuListView.setPrefSize(300, 300);
-        toolMenuListView.setItems(olTool); 
+        toolMenuListView.setItems(olAvailableTool); 
         employeeMenuListView.setItems(olEmployees);
         tabPane.getTabs().add(tab1);
         tabPane.getTabs().add(tab2);
@@ -408,6 +410,15 @@ public class SeacomToolsApp extends Application {
             primaryStage.setScene(checkoutScene);
             primaryStage.show();
         }); 
+
+        btnSelectedToolCheckout.setOnAction(e -> {
+            //cboTools.setItem(toolMenuListView.getSelectionModel().getSelectedItem());
+            cboTools.setValue(toolMenuListView.getSelectionModel().getSelectedItem());
+            
+            primaryStage.setScene(checkoutScene);
+            primaryStage.show();
+        });
+            
        
         btnCheckoutTool.setOnAction(e -> {
            checkoutTool();           
@@ -423,10 +434,10 @@ public class SeacomToolsApp extends Application {
             checkinTool(checkoutListView.getSelectionModel().getSelectedItem());    
         }); 
         
-       /* menuItemEmp.setOnAction(e-> {
+        /*menuItemEmp.setOnAction(e-> {
             primaryStage.setScene(addEmpScene);
             primaryStage.show();
-        }); */ 
+        });  */
         
        /* menuItemLoc.setOnAction(e-> {
             primaryStage.setScene(addLocationScene);
@@ -514,6 +525,7 @@ public class SeacomToolsApp extends Application {
         
         toolArray.add(newTool);
         olTool.add(newTool); 
+        olAvailableTool.add(newTool); 
         
         clearToolFields();
                  
@@ -528,6 +540,7 @@ public class SeacomToolsApp extends Application {
         
         toolArray.add(newTool);
         olTool.add(newTool); 
+        olAvailableTool.add(newTool);
         toolListView.refresh();
         
         
@@ -574,6 +587,7 @@ public class SeacomToolsApp extends Application {
         
         checkoutArray.add(newRecord);
         olCheckoutRecord.add(newRecord); 
+        olAvailableTool.remove(toolNumber); 
         
         toolNumber.setToolStatus("Out");
         
@@ -594,7 +608,8 @@ public class SeacomToolsApp extends Application {
         
         // Add Record to History for potential future research
         checkoutHistory.add(checkin);
-        olCheckoutHistory.add(checkin); 
+        olCheckoutHistory.add(checkin);
+        olAvailableTool.add(checkin.getToolNumber()); 
         
         // Remove record from Checkout
         olCheckoutRecord.remove(checkin);
