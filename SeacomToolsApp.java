@@ -67,7 +67,8 @@ public class SeacomToolsApp extends Application {
     Button btnCheckIn = new Button("Check In Tool"); 
     Button btnMenuAddEmp = new Button("Add New Employee");
     Button btnMenuAddLocation = new Button("Add New Location");
-    Button btnSelectedToolCheckout = new Button("Checkout Selected Tool"); 
+    Button btnSelectedToolCheckout = new Button("Checkout Selected Tool");
+    Button btnEditEmp = new Button("Edit Selected Employee Record");  
     Label lblTitle = new Label("Seacom Tools Application"); 
     TabPane tabPane = new TabPane(); 
     Tab tab1 = new Tab("Checkout Records", checkoutMenuPane);
@@ -173,8 +174,7 @@ public class SeacomToolsApp extends Application {
         rightMenuPane.setAlignment(Pos.CENTER);        
         checkoutMenuPane.getChildren().addAll(checkoutListView, btnCheckInTool); 
         toolMenuPane.getChildren().addAll(toolMenuListView, btnSelectedToolCheckout); 
-        empMenuPane.getChildren().addAll(employeeListView);
-        toolMenuListView.setPrefSize(300, 300);
+        empMenuPane.getChildren().addAll(employeeMenuListView, btnEditEmp);
         toolMenuListView.setItems(olAvailableTool); 
         employeeMenuListView.setItems(olEmployees);
         tabPane.getTabs().add(tab1);
@@ -299,7 +299,7 @@ public class SeacomToolsApp extends Application {
         btnEditTool.setOnAction(new EventHandler<ActionEvent>() {
             
             @Override 
-            public void handle(ActionEvent event)
+            public void handle(ActionEvent eventEditTool)
             {
                 GridPane editToolsPane = new GridPane(); 
                 
@@ -363,7 +363,7 @@ public class SeacomToolsApp extends Application {
                 Scene editToolsScene = new Scene(editToolsPane, 300, 300); 
                 
                 Stage editToolsWindow = new Stage();
-                editToolsWindow.setTitle("Second Stage"); 
+                editToolsWindow.setTitle("Edit Tool"); 
                 editToolsWindow.setScene(editToolsScene); 
                 editToolsWindow.initModality(Modality.WINDOW_MODAL); 
                 editToolsWindow.show(); 
@@ -393,6 +393,59 @@ public class SeacomToolsApp extends Application {
                 });               
             }
         }); 
+
+        btnEditEmp.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent eventEditEmp)
+            {
+                GridPane editEmpGridPane = new GridPane();
+
+                Label lblEditEmpFirstName = new Label("Name: ");
+                Label lblEditEmpPhone = new Label("Phone Number: ");
+                Label lblEditEmpEmail = new Label("Email: "); 
+                TextField txtEditEmpName = new TextField();
+                TextField txtEditEmpPhone = new TextField();
+                TextField txtEditEmpEmail = new TextField();
+                Button btnEditSaveEmp = new Button("Save Employee Changes"); 
+                Button btnEditCancelEmp = new Button("Cancel"); 
+
+                editEmpGridPane.add(lblEditEmpFirstName, 0, 0);
+                editEmpGridPane.add(lblEditEmpPhone, 0, 1);
+                editEmpGridPane.add(lblEditEmpEmail, 0, 2);
+                editEmpGridPane.add(txtEditEmpName, 1, 0); 
+                editEmpGridPane.add(txtEditEmpPhone, 1, 1); 
+                editEmpGridPane.add(txtEditEmpEmail, 1, 2); 
+                editEmpGridPane.add(btnEditSaveEmp, 1, 3); 
+                editEmpGridPane.add(btnEditCancelEmp, 1, 4); 
+
+                txtEditEmpName.setText(String.valueOf(employeeMenuListView.getSelectionModel().getSelectedItem().getName())); 
+                txtEditEmpPhone.setText(String.valueOf(employeeMenuListView.getSelectionModel().getSelectedItem().getPhoneNum()));
+                txtEditEmpEmail.setText(String.valueOf(employeeMenuListView.getSelectionModel().getSelectedItem().getEmail()));
+
+                Scene editEmpScene = new Scene(editEmpGridPane, 300, 300); 
+                Stage editEmpWindow = new Stage();
+                editEmpWindow.setScene(editEmpScene);
+                editEmpWindow.setTitle("Edit Employee");
+                editEmpWindow.initModality(Modality.WINDOW_MODAL); 
+                editEmpWindow.show(); 
+
+                btnEditCancelEmp.setOnAction(e-> {
+                    editEmpWindow.close();
+                });
+
+                btnEditSaveEmp.setOnAction(e->{
+                    int var = olEmployees.indexOf(employeeMenuListView.getSelectionModel().getSelectedItem()); 
+
+                    olEmployees.get(var).setName(txtEditEmpName.getText());
+                    olEmployees.get(var).setPhoneNum(txtEditEmpPhone.getText());
+                    olEmployees.get(var).setEmail(txtEditEmpEmail.getText()); 
+
+                    employeeMenuListView.refresh();
+                    editEmpWindow.close(); 
+                });
+                
+            }
+        });
               
         btnClearField.setOnAction(e-> {
             clearToolFields();
