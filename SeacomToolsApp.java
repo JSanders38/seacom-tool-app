@@ -26,13 +26,16 @@ import javafx.stage.Modality;
 public class SeacomToolsApp extends Application { 
     // Tool ArrayList, Observable List, List View 
     ArrayList<Tool> toolArray = new ArrayList<>();
-    public static ObservableList<Tool> olTool = FXCollections.observableArrayList();
+    public static ObservableList<Tool> olTool = FXCollections.observableArrayList(); 
+    public static ObservableList<Tool> olAvailableTool = FXCollections.observableArrayList(); 
     public static ListView<Tool> toolListView = new ListView<Tool>(); 
+    public static ListView<Tool> toolMenuListView = new ListView<Tool>();
    
     // Employee ArrayList, Observable List
     ArrayList<Employee> empArray = new ArrayList<>();
     public static ObservableList<Employee> olEmployees = FXCollections.observableArrayList();
-    public static ListView<Employee> employeeListView = new ListView<Employee>();
+    public static ListView<Employee> employeeListView = new ListView<Employee>(); 
+    public static ListView<Employee> employeeMenuListView = new ListView<Employee>();
     
     // Locations ArrayList, Observable List
     ArrayList<Locations> locationArray = new ArrayList<>();
@@ -54,24 +57,23 @@ public class SeacomToolsApp extends Application {
     public static ObservableList olStatus = FXCollections.observableArrayList(statusOpts);
     
     // Main Menu Pane and Btns 
-    GridPane menuGridPane = new GridPane(); 
     VBox rightMenuPane = new VBox();
     VBox checkoutMenuPane = new VBox(); 
+    VBox toolMenuPane = new VBox(); 
+    VBox empMenuPane = new VBox();
     BorderPane menuPane = new BorderPane();
     Button btnAddToolWindow = new Button("Add New Tool");
     Button btnCheckOutWindow = new Button("Check Out Tool");
     Button btnCheckIn = new Button("Check In Tool"); 
     Button btnMenuAddEmp = new Button("Add New Employee");
-    Button btnMenuAddLocation = new Button("Add New Location"); 
-    MenuBar menuBar = new MenuBar(); 
-    Menu menuAdd = new Menu("Add"); 
-    MenuItem menuItemEmp = new MenuItem ("Employee");
-    MenuItem menuItemLoc = new MenuItem ("Location"); 
+    Button btnMenuAddLocation = new Button("Add New Location");
+    Button btnSelectedToolCheckout = new Button("Checkout Selected Tool");
+    Button btnEditEmp = new Button("Edit Selected Employee Record");  
     Label lblTitle = new Label("Seacom Tools Application"); 
     TabPane tabPane = new TabPane(); 
     Tab tab1 = new Tab("Checkout Records", checkoutMenuPane);
-    Tab tab2 = new Tab("Available Tools");
-    Tab tab3 = new Tab("Current Employees");
+    Tab tab2 = new Tab("Available Tools", toolMenuPane);
+    Tab tab3 = new Tab("Current Employees", empMenuPane); 
     
     
     // Add Tools Variables 
@@ -170,7 +172,11 @@ public class SeacomToolsApp extends Application {
                 btnMenuAddEmp, btnMenuAddLocation);  
         rightMenuPane.setSpacing(15.0); 
         rightMenuPane.setAlignment(Pos.CENTER);        
-        checkoutMenuPane.getChildren().addAll(checkoutListView, btnCheckInTool);       
+        checkoutMenuPane.getChildren().addAll(checkoutListView, btnCheckInTool); 
+        toolMenuPane.getChildren().addAll(toolMenuListView, btnSelectedToolCheckout); 
+        empMenuPane.getChildren().addAll(employeeMenuListView, btnEditEmp);
+        toolMenuListView.setItems(olAvailableTool); 
+        employeeMenuListView.setItems(olEmployees);
         tabPane.getTabs().add(tab1);
         tabPane.getTabs().add(tab2);
         tabPane.getTabs().add(tab3);
@@ -212,7 +218,7 @@ public class SeacomToolsApp extends Application {
         addToolsPane.add(btnClearField, 0, 13);
         addToolsPane.setAlignment(Pos.CENTER);
         showTools.getChildren().addAll(toolListView);
-        toolListView.setPrefSize(600,300);
+        toolListView.setPrefSize(300,300);
         showTools.setAlignment(Pos.CENTER);
         rootPane.setTop(addToolsPane);
         rootPane.setBottom(showTools);
@@ -293,7 +299,7 @@ public class SeacomToolsApp extends Application {
         btnEditTool.setOnAction(new EventHandler<ActionEvent>() {
             
             @Override 
-            public void handle(ActionEvent event)
+            public void handle(ActionEvent eventEditTool)
             {
                 GridPane editToolsPane = new GridPane(); 
                 
@@ -357,7 +363,7 @@ public class SeacomToolsApp extends Application {
                 Scene editToolsScene = new Scene(editToolsPane, 300, 300); 
                 
                 Stage editToolsWindow = new Stage();
-                editToolsWindow.setTitle("Second Stage"); 
+                editToolsWindow.setTitle("Edit Tool"); 
                 editToolsWindow.setScene(editToolsScene); 
                 editToolsWindow.initModality(Modality.WINDOW_MODAL); 
                 editToolsWindow.show(); 
@@ -387,6 +393,59 @@ public class SeacomToolsApp extends Application {
                 });               
             }
         }); 
+
+        btnEditEmp.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent eventEditEmp)
+            {
+                GridPane editEmpGridPane = new GridPane();
+
+                Label lblEditEmpFirstName = new Label("Name: ");
+                Label lblEditEmpPhone = new Label("Phone Number: ");
+                Label lblEditEmpEmail = new Label("Email: "); 
+                TextField txtEditEmpName = new TextField();
+                TextField txtEditEmpPhone = new TextField();
+                TextField txtEditEmpEmail = new TextField();
+                Button btnEditSaveEmp = new Button("Save Employee Changes"); 
+                Button btnEditCancelEmp = new Button("Cancel"); 
+
+                editEmpGridPane.add(lblEditEmpFirstName, 0, 0);
+                editEmpGridPane.add(lblEditEmpPhone, 0, 1);
+                editEmpGridPane.add(lblEditEmpEmail, 0, 2);
+                editEmpGridPane.add(txtEditEmpName, 1, 0); 
+                editEmpGridPane.add(txtEditEmpPhone, 1, 1); 
+                editEmpGridPane.add(txtEditEmpEmail, 1, 2); 
+                editEmpGridPane.add(btnEditSaveEmp, 1, 3); 
+                editEmpGridPane.add(btnEditCancelEmp, 1, 4); 
+
+                txtEditEmpName.setText(String.valueOf(employeeMenuListView.getSelectionModel().getSelectedItem().getName())); 
+                txtEditEmpPhone.setText(String.valueOf(employeeMenuListView.getSelectionModel().getSelectedItem().getPhoneNum()));
+                txtEditEmpEmail.setText(String.valueOf(employeeMenuListView.getSelectionModel().getSelectedItem().getEmail()));
+
+                Scene editEmpScene = new Scene(editEmpGridPane, 300, 300); 
+                Stage editEmpWindow = new Stage();
+                editEmpWindow.setScene(editEmpScene);
+                editEmpWindow.setTitle("Edit Employee");
+                editEmpWindow.initModality(Modality.WINDOW_MODAL); 
+                editEmpWindow.show(); 
+
+                btnEditCancelEmp.setOnAction(e-> {
+                    editEmpWindow.close();
+                });
+
+                btnEditSaveEmp.setOnAction(e->{
+                    int var = olEmployees.indexOf(employeeMenuListView.getSelectionModel().getSelectedItem()); 
+
+                    olEmployees.get(var).setName(txtEditEmpName.getText());
+                    olEmployees.get(var).setPhoneNum(txtEditEmpPhone.getText());
+                    olEmployees.get(var).setEmail(txtEditEmpEmail.getText()); 
+
+                    employeeMenuListView.refresh();
+                    editEmpWindow.close(); 
+                });
+                
+            }
+        });
               
         btnClearField.setOnAction(e-> {
             clearToolFields();
@@ -404,6 +463,15 @@ public class SeacomToolsApp extends Application {
             primaryStage.setScene(checkoutScene);
             primaryStage.show();
         }); 
+
+        btnSelectedToolCheckout.setOnAction(e -> {
+            //cboTools.setItem(toolMenuListView.getSelectionModel().getSelectedItem());
+            cboTools.setValue(toolMenuListView.getSelectionModel().getSelectedItem());
+            
+            primaryStage.setScene(checkoutScene);
+            primaryStage.show();
+        });
+            
        
         btnCheckoutTool.setOnAction(e -> {
            checkoutTool();           
@@ -419,15 +487,15 @@ public class SeacomToolsApp extends Application {
             checkinTool(checkoutListView.getSelectionModel().getSelectedItem());    
         }); 
         
-        menuItemEmp.setOnAction(e-> {
+        /*menuItemEmp.setOnAction(e-> {
             primaryStage.setScene(addEmpScene);
             primaryStage.show();
-        }); 
+        });  */
         
-        menuItemLoc.setOnAction(e-> {
+       /* menuItemLoc.setOnAction(e-> {
             primaryStage.setScene(addLocationScene);
             primaryStage.show();
-        });
+        });*/
         
         btnAddEmp.setOnAction(e-> {
             addEmp();           
@@ -510,6 +578,7 @@ public class SeacomToolsApp extends Application {
         
         toolArray.add(newTool);
         olTool.add(newTool); 
+        olAvailableTool.add(newTool); 
         
         clearToolFields();
                  
@@ -524,6 +593,7 @@ public class SeacomToolsApp extends Application {
         
         toolArray.add(newTool);
         olTool.add(newTool); 
+        olAvailableTool.add(newTool);
         toolListView.refresh();
         
         
@@ -570,6 +640,7 @@ public class SeacomToolsApp extends Application {
         
         checkoutArray.add(newRecord);
         olCheckoutRecord.add(newRecord); 
+        olAvailableTool.remove(toolNumber); 
         
         toolNumber.setToolStatus("Out");
         
@@ -590,7 +661,8 @@ public class SeacomToolsApp extends Application {
         
         // Add Record to History for potential future research
         checkoutHistory.add(checkin);
-        olCheckoutHistory.add(checkin); 
+        olCheckoutHistory.add(checkin);
+        olAvailableTool.add(checkin.getToolNumber()); 
         
         // Remove record from Checkout
         olCheckoutRecord.remove(checkin);
