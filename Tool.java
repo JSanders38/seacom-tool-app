@@ -152,14 +152,14 @@ public Tool()
     
 //    public String toString()
 //    {
-//        return this.toolNum + "   " + this.toolName +"   " + this.toolStatus + "  " + this.toolDescription + 
+//        return "Toolthis.toolNum + "   " + this.toolName +"   " + this.toolStatus + "  " + this.toolDescription + 
 //                "   " +  this.modelNum + "   " + this.serialNum + "   " +
 //                this.purchaseDate + "   " + this.purchasePrice + " " + this.extraInfo + " " + this.shopLocation;
 //    } 
     
     public String toString()
     {
-        return this.toolNum + " " + this.toolName; 
+        return "Tool #: " + this.toolNum + "  " + this.toolName + "     " + "Status: " + this.toolStatus;  
     }
     
 }

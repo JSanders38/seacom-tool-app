@@ -8,10 +8,6 @@ public class CheckoutRecord {
     private Locations locationObj;
     private String date;
     
-
-// Does toolNumber variable need to change to int and only pass-through the number
-    // instead of passing through the whole object
-    // Same for Employee Name
 public CheckoutRecord(Tool toolNumber, Employee employeeObj, Locations locationObj, String date)
     {
         this.toolNumber = toolNumber;

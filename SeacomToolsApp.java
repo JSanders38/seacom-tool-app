@@ -10,17 +10,19 @@ import javafx.stage.Stage;
 import javafx.scene.text.*;
 import javafx.scene.control.Button;
 
+import java.io.FileInputStream;
 import java.util.*;
 import javafx.collections.*;
 import javafx.geometry.Pos;
-import javafx.scene.chart.*;
-import javafx.scene.control.cell.*;
+//import javafx.scene.chart.*;
+//import javafx.scene.control.cell.*;
+import javafx.scene.image.*;
 
-import java.sql.*;
+//import java.sql.*;
 //import oracle.jdbc.pool.*;
-import java.util.*;
-import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
+//import java.util.*;
+//import javafx.geometry.Insets;
+//import javafx.geometry.Orientation;
 import javafx.stage.Modality;
 
 public class SeacomToolsApp extends Application { 
@@ -103,7 +105,7 @@ public class SeacomToolsApp extends Application {
     Button btnClearField = new Button("Clear Fields");
     
     // Add Tools Panes for displaying input area and listView of Tools
-    BorderPane rootPane = new BorderPane(); 
+    BorderPane toolRootPane = new BorderPane(); 
     GridPane addToolsPane = new GridPane(); // Top of Pane
     HBox showTools = new HBox(); // Bottom of Pane 
     
@@ -176,7 +178,7 @@ public class SeacomToolsApp extends Application {
         toolMenuPane.getChildren().addAll(toolMenuListView, btnSelectedToolCheckout); 
         empMenuPane.getChildren().addAll(employeeMenuListView, btnEditEmp);
         toolMenuListView.setItems(olAvailableTool); 
-        employeeMenuListView.setItems(olEmployees);
+        employeeMenuListView.setItems(olEmployees); 
         tabPane.getTabs().add(tab1);
         tabPane.getTabs().add(tab2);
         tabPane.getTabs().add(tab3);
@@ -218,11 +220,10 @@ public class SeacomToolsApp extends Application {
         addToolsPane.add(btnClearField, 0, 13);
         addToolsPane.setAlignment(Pos.CENTER);
         showTools.getChildren().addAll(toolListView);
-        toolListView.setPrefSize(300,300);
         showTools.setAlignment(Pos.CENTER);
-        rootPane.setTop(addToolsPane);
-        rootPane.setBottom(showTools);
-        Scene toolScene = new Scene(rootPane, 600, 600);
+        toolRootPane.setRight(addToolsPane);
+        toolRootPane.setLeft(showTools);
+        Scene toolScene = new Scene(toolRootPane, 500, 425);
         
         toolListView.setItems(olTool); 
         
