@@ -70,12 +70,15 @@ public class SeacomToolsApp extends Application {
     Button btnMenuAddEmp = new Button("Add New Employee");
     Button btnMenuAddLocation = new Button("Add New Location");
     Button btnSelectedToolCheckout = new Button("Checkout Selected Tool");
-    Button btnEditEmp = new Button("Edit Selected Employee Record");  
+    Button btnEditEmp = new Button("Edit Selected Employee Record"); 
+    Button btnEmpToolsCheckedout = new Button("Show Tools Currently Checkout By Employee"); 
     Label lblTitle = new Label("Seacom Tools Application"); 
     TabPane tabPane = new TabPane(); 
     Tab tab1 = new Tab("Checkout Records", checkoutMenuPane);
     Tab tab2 = new Tab("Available Tools", toolMenuPane);
     Tab tab3 = new Tab("Current Employees", empMenuPane); 
+    Image seacomImage = new Image("https://secureservercdn.net/72.167.241.180/bpz.8b8.myftpupload.com/wp-content/themes/seacom/_/img/footer-logo.png");
+    ImageView seacomIV = new ImageView(seacomImage);
     
     
     // Add Tools Variables 
@@ -176,7 +179,7 @@ public class SeacomToolsApp extends Application {
         rightMenuPane.setAlignment(Pos.CENTER);        
         checkoutMenuPane.getChildren().addAll(checkoutListView, btnCheckInTool); 
         toolMenuPane.getChildren().addAll(toolMenuListView, btnSelectedToolCheckout); 
-        empMenuPane.getChildren().addAll(employeeMenuListView, btnEditEmp);
+        empMenuPane.getChildren().addAll(employeeMenuListView, btnEditEmp, btnEmpToolsCheckedout);
         toolMenuListView.setItems(olAvailableTool); 
         employeeMenuListView.setItems(olEmployees); 
         tabPane.getTabs().add(tab1);
@@ -187,6 +190,8 @@ public class SeacomToolsApp extends Application {
         menuPane.setRight(rightMenuPane);
         menuPane.setLeft(tabPane); 
         menuPane.setTop(lblTitle); 
+        menuPane.setBottom(seacomIV);
+        menuPane.setAlignment(seacomIV, Pos.CENTER);
         lblTitle.setFont(Font.font("Times New Roman", FontWeight.BOLD, 20));
         BorderPane.setAlignment(lblTitle, Pos.CENTER); 
         
