@@ -6,16 +6,18 @@ public class Employee {
     private int empID;
     private String name;
     private String phoneNum; 
-    private String email;
+    private String email; 
+    private String empStatus;
     
     int nextID = 1;
     
-    public Employee(String name, String phoneNum, String email){
+    public Employee(String name, String phoneNum, String email, String empStatus){
         
         this.empID = nextID++;
         this.name = name;
         this.phoneNum = phoneNum; 
-        this.email = email;
+        this.email = email; 
+        this.empStatus = empStatus;
     }     
     
     //getters 
@@ -37,6 +39,11 @@ public class Employee {
     public String getEmail()
     {
         return this.email;
+    } 
+
+    public String getEmpStatus()
+    {
+        return this.empStatus;
     }
     
     //setter 
@@ -58,6 +65,11 @@ public class Employee {
      public void setEmail(String email)
      {
          this.email = email;
+     }
+
+     public void setEmpStatus(String empStatus)
+     {
+         this.empStatus = empStatus;
      }
      
      public String toString()

@@ -46,8 +46,10 @@ public class SeacomToolsApp extends Application {
     
     // Checkout Record ArrayList, Observable List
     ArrayList<CheckoutRecord> checkoutArray = new ArrayList<>();
-    public static ObservableList olCheckoutRecord = FXCollections.observableArrayList(); 
+    public static ObservableList<CheckoutRecord> olCheckoutRecord = FXCollections.observableArrayList(); 
     public static ListView<CheckoutRecord> checkoutListView = new ListView<CheckoutRecord>(); 
+    public static ListView<CheckoutRecord> checkoutMenuListView = new ListView<CheckoutRecord>(); 
+   
     
     // Checkout Record History ArrayList, Observable List 
     ArrayList<CheckoutRecord> checkoutHistory = new ArrayList<>();
@@ -69,6 +71,7 @@ public class SeacomToolsApp extends Application {
     Button btnCheckIn = new Button("Check In Tool"); 
     Button btnMenuAddEmp = new Button("Add New Employee");
     Button btnMenuAddLocation = new Button("Add New Location");
+    Button btnMenuCheckInTool = new Button("Check In Selected Tool");
     Button btnSelectedToolCheckout = new Button("Checkout Selected Tool");
     Button btnEditEmp = new Button("Edit Selected Employee Record"); 
     Button btnEmpToolsCheckedout = new Button("Show Tools Currently Checkout By Employee"); 
@@ -143,7 +146,7 @@ public class SeacomToolsApp extends Application {
     Label lblEmpFirstName = new Label("First Name: ");
     Label lblEmpLastName = new Label("Last Name: "); 
     Label lblEmpPhone = new Label("Phone Number: ");
-    Label lblEmpEmail = new Label("Email: "); 
+    Label lblEmpEmail = new Label("Email: ");
     TextField txtEmpFirstName = new TextField();
     TextField txtEmpLastName = new TextField();
     TextField txtEmpPhone = new TextField();
@@ -165,7 +168,7 @@ public class SeacomToolsApp extends Application {
         
          //Sample Employees and Locations
         addTool(1, "Test", "In", "Test Tool", "abc123", "123456", "1/1/2022", 19.99, "Test", "Connex"); 
-        Employee sampleEmp = new Employee("Bill Sanders", "8045648822", "btb@mindspring.com");
+        Employee sampleEmp = new Employee("Bill Sanders", "8045648822", "btb@mindspring.com", "Active");
         empArray.add(sampleEmp);
         olEmployees.add(sampleEmp);
         Locations sampleLocation = new Locations("Shop", "2314 Commerce Center Drive" );
@@ -177,7 +180,7 @@ public class SeacomToolsApp extends Application {
                 btnMenuAddEmp, btnMenuAddLocation);  
         rightMenuPane.setSpacing(15.0); 
         rightMenuPane.setAlignment(Pos.CENTER);        
-        checkoutMenuPane.getChildren().addAll(checkoutListView, btnCheckInTool); 
+        checkoutMenuPane.getChildren().addAll(checkoutMenuListView, btnMenuCheckInTool); 
         toolMenuPane.getChildren().addAll(toolMenuListView, btnSelectedToolCheckout); 
         empMenuPane.getChildren().addAll(employeeMenuListView, btnEditEmp, btnEmpToolsCheckedout);
         toolMenuListView.setItems(olAvailableTool); 
@@ -185,7 +188,9 @@ public class SeacomToolsApp extends Application {
         tabPane.getTabs().add(tab1);
         tabPane.getTabs().add(tab2);
         tabPane.getTabs().add(tab3);
-        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE); 
+
+        checkoutMenuListView.setItems(olCheckoutRecord);
         
         menuPane.setRight(rightMenuPane);
         menuPane.setLeft(tabPane); 
@@ -254,14 +259,14 @@ public class SeacomToolsApp extends Application {
         Scene checkoutScene = new Scene(checkoutPane, 300, 200); 
         
         //CheckIn Tool 
-//        checkinHBoxTop.getChildren().addAll(checkoutListView); 
-//        checkoutListView.setPrefSize(300,300); 
-//        checkinBottom.add(btnCheckInTool, 0,0); 
-//        checkinBottom.add(btnReturn2, 0, 1);
-//        checkinPane.setTop(checkinHBoxTop);
-//        checkinPane.setBottom(checkinBottom);
-//        Scene checkinScene = new Scene (checkinPane, 400, 400); 
-//        
+        checkinHBoxTop.getChildren().addAll(checkoutListView); 
+        checkoutListView.setPrefSize(300,300); 
+        checkinBottom.add(btnCheckInTool, 0,0); 
+        checkinBottom.add(btnReturn2, 0, 1);
+        checkinPane.setTop(checkinHBoxTop);
+        checkinPane.setBottom(checkinBottom);
+        Scene checkinScene = new Scene (checkinPane, 400, 400); 
+        
         checkoutListView.setItems(olCheckoutRecord); 
         
         //Add Employee Pane
@@ -382,6 +387,7 @@ public class SeacomToolsApp extends Application {
                 btnSave.setOnAction(e-> {
 
                     int var = olTool.indexOf(toolListView.getSelectionModel().getSelectedItem());
+                    Tool oldTool = olTool.get(var);
 
                     olTool.get(var).setToolNum(Integer.parseInt(txtEToolNum.getText())); 
                     olTool.get(var).setToolName(txtEToolName.getText());
@@ -393,8 +399,26 @@ public class SeacomToolsApp extends Application {
                     olTool.get(var).setPurchasePrice(Double.parseDouble(txtEPrice.getText()));
                     olTool.get(var).setExtraInfo(txtEExtraInfo.getText());
                     olTool.get(var).setShopLocation(txtEShopLocation.getText()); 
-                     
-                    toolListView.refresh();
+
+                    Tool newEditTool = olTool.get(var);
+                    
+                    for (int i = 0; i < olCheckoutRecord.size()-1; i++)
+                    {
+                        
+                        CheckoutRecord newCheckoutRecord = olCheckoutRecord.get(i); 
+                        Tool toolX = newCheckoutRecord.getToolNumber();
+
+
+                        if (toolX.equals(oldTool))
+                        {
+                            newCheckoutRecord.setToolNumber(newEditTool);
+                            olCheckoutRecord.set(i, newCheckoutRecord);
+                        }
+                    }
+
+                    checkoutListView.refresh();                    
+                    checkoutMenuListView.refresh();
+                    toolListView.refresh(); 
                     editToolsWindow.close();
                 });               
             }
@@ -409,20 +433,30 @@ public class SeacomToolsApp extends Application {
                 Label lblEditEmpFirstName = new Label("Name: ");
                 Label lblEditEmpPhone = new Label("Phone Number: ");
                 Label lblEditEmpEmail = new Label("Email: "); 
+                Label lblEditEmpStatus = new Label("Employee Status");
                 TextField txtEditEmpName = new TextField();
                 TextField txtEditEmpPhone = new TextField();
-                TextField txtEditEmpEmail = new TextField();
+                TextField txtEditEmpEmail = new TextField(); 
+                RadioButton rbEmpStatus1 = new RadioButton("Active");
+                RadioButton rbEmpStatus2 = new RadioButton("Unactive");
+                ToggleGroup empGroup = new ToggleGroup();
                 Button btnEditSaveEmp = new Button("Save Employee Changes"); 
                 Button btnEditCancelEmp = new Button("Cancel"); 
+
+                rbEmpStatus1.setToggleGroup(empGroup);
+                rbEmpStatus2.setToggleGroup(empGroup);
 
                 editEmpGridPane.add(lblEditEmpFirstName, 0, 0);
                 editEmpGridPane.add(lblEditEmpPhone, 0, 1);
                 editEmpGridPane.add(lblEditEmpEmail, 0, 2);
+                editEmpGridPane.add(lblEditEmpStatus, 0, 3);
                 editEmpGridPane.add(txtEditEmpName, 1, 0); 
                 editEmpGridPane.add(txtEditEmpPhone, 1, 1); 
-                editEmpGridPane.add(txtEditEmpEmail, 1, 2); 
-                editEmpGridPane.add(btnEditSaveEmp, 1, 3); 
-                editEmpGridPane.add(btnEditCancelEmp, 1, 4); 
+                editEmpGridPane.add(txtEditEmpEmail, 1, 2);
+                editEmpGridPane.add(rbEmpStatus1, 1, 3); 
+                editEmpGridPane.add(rbEmpStatus2, 1, 4); 
+                editEmpGridPane.add(btnEditSaveEmp, 1, 5); 
+                editEmpGridPane.add(btnEditCancelEmp, 1, 6); 
 
                 txtEditEmpName.setText(String.valueOf(employeeMenuListView.getSelectionModel().getSelectedItem().getName())); 
                 txtEditEmpPhone.setText(String.valueOf(employeeMenuListView.getSelectionModel().getSelectedItem().getPhoneNum()));
@@ -441,11 +475,31 @@ public class SeacomToolsApp extends Application {
 
                 btnEditSaveEmp.setOnAction(e->{
                     int var = olEmployees.indexOf(employeeMenuListView.getSelectionModel().getSelectedItem()); 
+                    Employee oldEmp = olEmployees.get(var); 
 
                     olEmployees.get(var).setName(txtEditEmpName.getText());
                     olEmployees.get(var).setPhoneNum(txtEditEmpPhone.getText());
                     olEmployees.get(var).setEmail(txtEditEmpEmail.getText()); 
 
+                    Employee newEmp = olEmployees.get(var);
+                    
+
+                    for (int i = 0; i < olCheckoutRecord.size()-1; i++)
+                    {
+                        
+                        CheckoutRecord newCheckoutRecord = olCheckoutRecord.get(i); 
+                        Employee empX = newCheckoutRecord.getEmployeeObj();
+
+
+                        if (empX.equals(oldEmp))
+                        {
+                            newCheckoutRecord.setEmployeeObj(newEmp);
+                            olCheckoutRecord.set(i, newCheckoutRecord);
+                        }
+                    }
+
+                    checkoutListView.refresh();
+                    checkoutMenuListView.refresh();
                     employeeMenuListView.refresh();
                     editEmpWindow.close(); 
                 });
@@ -484,24 +538,28 @@ public class SeacomToolsApp extends Application {
         });
         
         // Shows Check-in Screen
-//        btnCheckIn.setOnAction(e -> {        
-//            primaryStage.setScene(checkinScene);
-//            primaryStage.show();        
-//        });
+        btnCheckIn.setOnAction(e -> {        
+            primaryStage.setScene(checkinScene);
+            primaryStage.show();        
+        });
+        
+        btnMenuCheckInTool.setOnAction(e -> {
+            checkinTool(checkoutMenuListView.getSelectionModel().getSelectedItem());    
+        });
         
         btnCheckInTool.setOnAction(e -> {
             checkinTool(checkoutListView.getSelectionModel().getSelectedItem());    
         }); 
         
-        /*menuItemEmp.setOnAction(e-> {
+        btnMenuAddEmp.setOnAction(e-> {
             primaryStage.setScene(addEmpScene);
             primaryStage.show();
-        });  */
+        }); 
         
-       /* menuItemLoc.setOnAction(e-> {
+        btnMenuAddLocation.setOnAction(e-> {
             primaryStage.setScene(addLocationScene);
             primaryStage.show();
-        });*/
+        });
         
         btnAddEmp.setOnAction(e-> {
             addEmp();           
